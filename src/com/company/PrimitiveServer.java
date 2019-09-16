@@ -5,11 +5,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 public class PrimitiveServer {
     private static final int SERVER_PORT = 12345;
-    private static final String TO_REPEAT = "Param";
 
     public static void main(String[] args) {
 
@@ -19,20 +17,27 @@ public class PrimitiveServer {
             Scanner sc = new Scanner(s.getInputStream());
             PrintWriter pw = new PrintWriter(s.getOutputStream());
         ) {
-            pw.println("Hello Client");
-            pw.println("");
-            pw.println("Enter a number:");
-            pw.flush();
 
-            int num = sc.nextInt();
+            String line;
+            System.out.println("Receiving");
+            while (sc.hasNextLine()) {
+                line = sc.nextLine();
+                int number = Integer.parseInt(line);
+                System.out.println("Received: " + number);
+                int calculatedNumber = calc(number);
+                System.out.println("Sending: " + calculatedNumber);
+                pw.println(calculatedNumber);
+            }
 
-            IntStream.range(0, num).forEach(i -> {
-                pw.println(TO_REPEAT);
-            });
             pw.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static int calc(int number) {
+        if (number == 0) { return 0; }
+        return number * 2 + 1;
     }
 }
