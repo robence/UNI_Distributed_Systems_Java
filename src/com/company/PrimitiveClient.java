@@ -9,17 +9,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 public class PrimitiveClient {
-    public static void main(String[] args) {
-        final String HOST = "127.0.0.1";
-        final int PORT = 12345;
-        final BigDecimal SIZE = new BigDecimal(1000000);
+    private static final String HOST = "127.0.0.1";
+    private static final int PORT = 12345;
+    private static final BigDecimal SIZE = new BigDecimal(1000000);
 
+    public static void main(String[] args) {
         LocalDateTime start = LocalDateTime.now();
 
         try (
-                var s = new Socket(HOST, PORT);
-                var sc = new Scanner(s.getInputStream());
-                var pw = new PrintWriter(s.getOutputStream());
+            var s = new Socket(HOST, PORT);
+            var sc = new Scanner(s.getInputStream());
+            var pw = new PrintWriter(s.getOutputStream());
         ) {
             String welcome = sc.nextLine();
             System.out.println(welcome);

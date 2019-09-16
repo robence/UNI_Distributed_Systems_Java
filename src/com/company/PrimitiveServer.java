@@ -8,15 +8,16 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 
 public class PrimitiveServer {
-    public static void main(String[] args) {
-        final int SERVER_PORT = 12345;
+    private static final int SERVER_PORT = 12345;
+    private static final String TO_REPEAT = "Param";
 
-        final String text = "Param";
+    public static void main(String[] args) {
+
         try (
-                ServerSocket ss = new ServerSocket(SERVER_PORT);
-                Socket s = ss.accept();
-                Scanner sc = new Scanner(s.getInputStream());
-                PrintWriter pw = new PrintWriter(s.getOutputStream());
+            ServerSocket ss = new ServerSocket(SERVER_PORT);
+            Socket s = ss.accept();
+            Scanner sc = new Scanner(s.getInputStream());
+            PrintWriter pw = new PrintWriter(s.getOutputStream());
         ) {
             pw.println("Hello Client");
             pw.println("");
@@ -26,7 +27,7 @@ public class PrimitiveServer {
             int num = sc.nextInt();
 
             IntStream.range(0, num).forEach(i -> {
-                pw.println(text);
+                pw.println(TO_REPEAT);
             });
             pw.flush();
 
