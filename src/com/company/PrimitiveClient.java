@@ -21,14 +21,14 @@ public class PrimitiveClient {
                 var sc = new Scanner(s.getInputStream());
                 var pw = new PrintWriter(s.getOutputStream());
         ) {
-            String msg = sc.nextLine();
-            System.out.println(msg);
+            String welcome = sc.nextLine();
+            System.out.println(welcome);
 
-            msg = sc.nextLine();
-            System.out.println(msg);
-            msg = sc.nextLine();
-            System.out.println(msg);
+            String emptyLine = sc.nextLine();
+            System.out.println(emptyLine);
 
+            String prompt = sc.nextLine();
+            System.out.println(prompt);
 
             pw.println(SIZE);
             pw.flush();
