@@ -1,36 +1,41 @@
 package com.company;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
+
+import static com.company.TimeLogger.logTime;
 
 public class PrimitiveClient {
     private static final String HOST = "127.0.0.1";
     private static final int PORT = 12345;
-    private static final String FILE_PATH = "resources/input.txt";
+    private static final String INPUT_FILE_PATH = "resources/input.txt";
+    private static final String OUTPUT_FILE_PATH = "resources/output.txt";
 
     public static void main(String[] args) {
-
         try (
-                var s = new Socket(HOST, PORT);
-                var scFile = new Scanner(new File(FILE_PATH));
-                var scInput = new Scanner(s.getInputStream());
-                var pw = new PrintWriter(s.getOutputStream());
+                var socket = new Socket(HOST, PORT);
+                var scFile = new Scanner(new File(INPUT_FILE_PATH));
+                var scInput = new Scanner(socket.getInputStream());
+                var pwInput = new PrintWriter(socket.getOutputStream());
+                var fileWriter = new FileWriter(OUTPUT_FILE_PATH);
+                var pwOutput = new PrintWriter(fileWriter);
         ) {
-            LocalDateTime start = LocalDateTime.now();
+            LocalDateTime startedAt = LocalDateTime.now();
             String line;
+
             // sending data to server
             System.out.println("Sending");
             while (scFile.hasNextLine()) {
                 line = scFile.nextLine();
                 System.out.println(line);
-                pw.println(line);
+                pwInput.println(line);
             }
-            pw.flush();
+            pwInput.flush();
 
             // response from server
             System.out.println("Receiving");
@@ -40,27 +45,17 @@ public class PrimitiveClient {
 
                 System.out.println("Client Line");
                 System.out.println(calculatedNumber);
-                // TODO: write to file
+                pwOutput.println(line);
 
                 if (calculatedNumber == 0) {
                     System.out.println("Break");
                     break;
                 }
             }
-
             // log elapsed time in millis
-            logTime(start);
+            logTime(startedAt);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void logTime(LocalDateTime start) {
-        LocalDateTime now = LocalDateTime.now();
-        long millis = ChronoUnit.MILLIS.between(start, now);
-
-        System.out.println("Start: " + start);
-        System.out.println("Now " + now);
-        System.out.println("Time: " + millis + " millis");
     }
 }

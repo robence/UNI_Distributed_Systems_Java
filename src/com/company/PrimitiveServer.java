@@ -10,7 +10,6 @@ public class PrimitiveServer {
     private static final int SERVER_PORT = 12345;
 
     public static void main(String[] args) {
-
         try (
                 ServerSocket ss = new ServerSocket(SERVER_PORT);
                 Socket s = ss.accept();
