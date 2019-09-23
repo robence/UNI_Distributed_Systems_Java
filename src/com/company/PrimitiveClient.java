@@ -27,12 +27,10 @@ public class PrimitiveClient {
             System.out.println("Sending");
             while (scFile.hasNextLine()) {
                 line = scFile.nextLine();
-                int numberToSend = Integer.parseInt(line);
-                System.out.println(numberToSend);
-                pw.println(numberToSend);
+                System.out.println(line);
+                pw.println(line);
             }
             pw.flush();
-
 
             // response from server
             System.out.println("Receiving");
@@ -40,10 +38,12 @@ public class PrimitiveClient {
                 line = scInput.nextLine();
                 int calculatedNumber = Integer.parseInt(line);
 
+                System.out.println("Client Line");
                 System.out.println(calculatedNumber);
                 // TODO: write to file
 
                 if (calculatedNumber == 0) {
+                    System.out.println("Break");
                     break;
                 }
             }
