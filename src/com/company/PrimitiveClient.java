@@ -1,13 +1,16 @@
 package com.company;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
+import static com.company.IOHelper.readFromFile;
+import static com.company.IOHelper.readFromServer;
+import static com.company.IOHelper.sendToServer;
+import static com.company.IOHelper.writeToFile;
 import static com.company.TimeLogger.logTime;
 
 public class PrimitiveClient {
@@ -19,39 +22,18 @@ public class PrimitiveClient {
     public static void main(String[] args) {
         try (
                 var socket = new Socket(HOST, PORT);
-                var scFile = new Scanner(new File(INPUT_FILE_PATH));
-                var scInput = new Scanner(socket.getInputStream());
                 var pwInput = new PrintWriter(socket.getOutputStream());
-                var fileWriter = new FileWriter(OUTPUT_FILE_PATH);
-                var pwOutput = new PrintWriter(fileWriter);
+                var scInput = new Scanner(socket.getInputStream());
+
         ) {
             LocalDateTime startedAt = LocalDateTime.now();
-            String line;
 
-            // sending data to server
-            System.out.println("Sending");
-            while (scFile.hasNextLine()) {
-                line = scFile.nextLine();
-                System.out.println(line);
-                pwInput.println(line);
-            }
-            pwInput.flush();
+            List<String> numsToSend = readFromFile(INPUT_FILE_PATH);
+            sendToServer(numsToSend, pwInput);
 
-            // response from server
-            System.out.println("Receiving");
-            while (scInput.hasNextLine()) {
-                line = scInput.nextLine();
-                int calculatedNumber = Integer.parseInt(line);
+            List<String> dataFromServer = readFromServer(scInput);
+            writeToFile(dataFromServer, OUTPUT_FILE_PATH);
 
-                System.out.println("Client Line");
-                System.out.println(calculatedNumber);
-                pwOutput.println(line);
-
-                if (calculatedNumber == 0) {
-                    System.out.println("Break");
-                    break;
-                }
-            }
             // log elapsed time in millis
             logTime(startedAt);
         } catch (IOException e) {

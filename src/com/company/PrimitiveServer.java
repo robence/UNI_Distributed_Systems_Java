@@ -16,6 +16,8 @@ public class PrimitiveServer {
                 Scanner sc = new Scanner(s.getInputStream());
                 PrintWriter pw = new PrintWriter(s.getOutputStream());
         ) {
+            System.out.println("Listening on port: " + SERVER_PORT);
+            pw.flush();
             int length = Integer.parseInt(sc.nextLine());
 
             String line;
