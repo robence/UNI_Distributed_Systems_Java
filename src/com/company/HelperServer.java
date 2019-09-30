@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class HelperServer {
-    private static final int SERVER_PORT = 54321;
     private static final String INPUT_FILE_PATH = "resources/numbers.txt";
 
     public static void main(String[] args) {
-
+        String serverPort = args[0];
+        final int SERVER_PORT = Integer.parseInt(serverPort);
         try (
                 ServerSocket ss = new ServerSocket(SERVER_PORT);
                 Socket s = ss.accept();
