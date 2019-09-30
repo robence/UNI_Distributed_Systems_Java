@@ -12,33 +12,24 @@ public class PrimitiveServer {
 
     public static void main(String[] args) {
 
-        int clientCount = 0;
-
         try (
                 ServerSocket ss = new ServerSocket(SERVER_PORT);
         ) {
+
+            var clientSum = 0;
+
             while (true) {
                 try (Socket s = ss.accept();
                      Scanner sc = new Scanner(s.getInputStream());
                      PrintWriter pw = new PrintWriter(s.getOutputStream());
                 ) {
 
-                    while (sc.hasNextLine()) {
-                        var filename = sc.next();
+                    while (sc.hasNextInt()) {
+                        var num = sc.nextInt();
+                        clientSum += num;
 
-                        var file = new File(filename);
-                        if(file.exists()) {
-                            try(var scFile = new Scanner(file)) {
-                                while (scFile.hasNextLine()) {
-                                    var line = scFile.nextLine();
-                                    pw.println(line);
-                                }
-                            }
-                        } else {
-                            pw.println("Missing file " + filename);
-                        }
+                        pw.println(clientSum);
                         pw.flush();
-
                     }
                 }
             }
