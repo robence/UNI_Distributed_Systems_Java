@@ -1,14 +1,15 @@
 package com.company;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.Scanner;
 
 public class PrimitiveServer {
     private static final int SERVER_PORT = 12345;
+    private static final String INPUT_FILE_PATH = "resources/ports.txt";
 
     public static void main(String[] args) {
 
@@ -16,7 +17,7 @@ public class PrimitiveServer {
                 ServerSocket ss = new ServerSocket(SERVER_PORT);
         ) {
 
-            var clientSum = 0;
+            // TODO: should start servers here
 
             while (true) {
                 try (Socket s = ss.accept();
@@ -24,13 +25,12 @@ public class PrimitiveServer {
                      PrintWriter pw = new PrintWriter(s.getOutputStream());
                 ) {
 
-                    while (sc.hasNextInt()) {
-                        var num = sc.nextInt();
-                        clientSum += num;
-
-                        pw.println(clientSum);
-                        pw.flush();
+                    List<String> portNumbers = IOHelper.readFromFile(INPUT_FILE_PATH);
+                    System.out.println("Sending " + portNumbers.size() + " port(s)");
+                    for (String port : portNumbers) {
+                        pw.println(port);
                     }
+                    pw.flush();
                 }
             }
         } catch (IOException e) {
