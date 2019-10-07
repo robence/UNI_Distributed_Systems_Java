@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 import java.util.Scanner;
 
 public class PrimitiveServer {
     private static final int SERVER_PORT = 12345;
-    private static final String INPUT_FILE_PATH = "resources/ports.txt";
 
     public static void main(String[] args) {
 
@@ -17,20 +15,29 @@ public class PrimitiveServer {
                 ServerSocket ss = new ServerSocket(SERVER_PORT);
         ) {
 
-            // TODO: should start servers here
-
             while (true) {
-                try (Socket s = ss.accept();
-                     Scanner sc = new Scanner(s.getInputStream());
-                     PrintWriter pw = new PrintWriter(s.getOutputStream());
+                try (
+                        Socket s1 = ss.accept();
+                        Scanner sc1 = new Scanner(s1.getInputStream());
+                        PrintWriter pw1 = new PrintWriter(s1.getOutputStream());
+
+                        Socket s2 = ss.accept();
+                        Scanner sc2 = new Scanner(s2.getInputStream());
+                        PrintWriter pw2 = new PrintWriter(s2.getOutputStream());
                 ) {
 
-                    List<String> portNumbers = IOHelper.readFromFile(INPUT_FILE_PATH);
-                    System.out.println("Sending " + portNumbers.size() + " port(s)");
-                    for (String port : portNumbers) {
-                        pw.println(port);
+                    while (sc1.hasNextLine()) {
+                        String line = sc1.nextLine();
+
+                        pw2.println(line);
+                        pw2.flush();
+
+                        if (!sc2.hasNextLine()) break;
+                            String line2 = sc2.nextLine();
+                            pw1.println(line2);
+                            pw2.flush();
+
                     }
-                    pw.flush();
                 }
             }
         } catch (IOException e) {
