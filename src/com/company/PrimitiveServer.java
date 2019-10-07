@@ -17,31 +17,69 @@ public class PrimitiveServer {
 
             while (true) {
                 try (
-                        Socket s1 = ss.accept();
-                        Scanner sc1 = new Scanner(s1.getInputStream());
-                        PrintWriter pw1 = new PrintWriter(s1.getOutputStream());
-
-                        Socket s2 = ss.accept();
-                        Scanner sc2 = new Scanner(s2.getInputStream());
-                        PrintWriter pw2 = new PrintWriter(s2.getOutputStream());
+                        ClientData client1 = new ClientData(ss);
+                        ClientData client2 = new ClientData(ss);
                 ) {
-
                     while (true) {
-                        if (!sendMsg(sc1, pw2)) break;
-                        if (!sendMsg(sc2, pw1)) break;
+                        if (!client1.sendMsg(client2)) break;
+                        if (!client2.sendMsg(client1)) break;
                     }
+                } finally {
+
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+}
 
-    private static boolean sendMsg(Scanner sc, PrintWriter pw) {
+class ClientData implements AutoCloseable {
+    private Socket s;
+    private Scanner sc;
+    private PrintWriter pw;
+
+    private String name;
+    private int msgId = 0;
+
+    ClientData(ServerSocket ss) throws IOException {
+        s = ss.accept();
+        sc = new Scanner(s.getInputStream());
+        pw = new PrintWriter(s.getOutputStream());
+
+        name = sc.nextLine();
+    }
+
+    boolean sendMsg(ClientData other) {
         if (!sc.hasNextLine()) return false;
         String line = sc.nextLine();
-        pw.println(line);
-        pw.flush();
+        ++msgId;
+
+        other.getPw().printf("%s #%d: %s%n", getName(), getMsgId(), line);
+        other.getPw().flush();
         return true;
+    }
+
+    public Scanner getSc() {
+        return this.sc;
+    }
+
+    private PrintWriter getPw() {
+        return this.pw;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getMsgId() {
+        return msgId;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (s != null) {
+            s.close();
+        }
     }
 }
