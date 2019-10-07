@@ -26,22 +26,22 @@ public class PrimitiveServer {
                         PrintWriter pw2 = new PrintWriter(s2.getOutputStream());
                 ) {
 
-                    while (sc1.hasNextLine()) {
-                        String line = sc1.nextLine();
-
-                        pw2.println(line);
-                        pw2.flush();
-
-                        if (!sc2.hasNextLine()) break;
-                            String line2 = sc2.nextLine();
-                            pw1.println(line2);
-                            pw2.flush();
-
+                    while (true) {
+                        if (!sendMsg(sc1, pw2)) break;
+                        if (!sendMsg(sc2, pw1)) break;
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean sendMsg(Scanner sc, PrintWriter pw) {
+        if (!sc.hasNextLine()) return false;
+        String line = sc.nextLine();
+        pw.println(line);
+        pw.flush();
+        return true;
     }
 }
